@@ -6,6 +6,7 @@ booking management, PNR lookup, and admin operations.
 
 from flask import Flask, render_template, request, jsonify, redirect, url_for
 from database import get_db, init_db
+import sqlite3
 import random
 import string
 from datetime import datetime, timedelta
