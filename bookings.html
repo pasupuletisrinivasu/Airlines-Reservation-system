@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block title %}Manage Bookings & Digital Boarding Pass | SkyWings Airlines{% endblock %}
+
+{% block content %}
+<div class="hero-section no-print" style="padding: 2.5rem 1.5rem 4rem;">
+  <div class="hero-pattern"></div>
+  <div class="hero-container">
+    <h1 class="hero-title" style="font-size: 2.5rem; margin-bottom: 0.5rem;">
+      Manage Your <span class="gradient-text">Flight Reservation</span>
+    </h1>
+    <p class="hero-subtitle" style="margin-bottom: 0;">
+      Enter your 6-character PNR reference code to view, print your boarding pass, or cancel your booking.
+    </p>
+  </div>
+</div>
+
+<div class="main-container" style="margin-top: -2.5rem;">
+  <!-- PNR Search Bar -->
+  <div class="search-card no-print" style="max-width: 680px; margin: 0 auto 2.5rem; padding: 1.5rem 2rem;">
+    <form id="pnrSearchForm" style="display: flex; gap: 0.75rem; align-items: center;">
+      <div class="input-box" style="flex: 1;">
+        <label for="pnrInput">🎟️ Booking Reference (PNR)</label>
+        <input type="text" id="pnrInput" placeholder="e.g. SW789X or SW48K2" maxlength="10" value="{{ default_pnr }}" style="text-transform: uppercase; font-family: 'Space Grotesk', sans-serif; font-size: 1.15rem; letter-spacing: 1px;" required>
+      </div>
+      <button type="submit" class="btn-search" style="height: 52px; padding: 0 1.75rem;">
+        Retrieve Ticket
+      </button>
+    </form>
+    <div style="font-size: 0.8rem; color: #64748b; margin-top: 0.75rem; text-align: center;">
+      💡 Tip: Use your confirmation code or test with sample booking: <strong style="color: #1e40af; cursor: pointer;" onclick="document.getElementById('pnrInput').value='SW789X'; document.getElementById('pnrSearchForm').dispatchEvent(new Event('submit'));">SW789X</strong>
+    </div>
+  </div>
+
+  <!-- Dynamic Boarding Pass / Ticket Result Area -->
+  <div id="bookingResultSection">
+    <div class="empty-state">
+      <div class="empty-icon">🎫</div>
+      <h3>Enter your PNR reference code above</h3>
+      <p>Your electronic boarding pass with barcode, seat number, and flight schedule will appear here.</p>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/bookings.js') }}"></script>
+{% endblock %}

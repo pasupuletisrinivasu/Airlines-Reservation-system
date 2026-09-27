@@ -1,0 +1,341 @@
+{% extends "base.html" %}
+
+{% block title %}Search & Book Flights | SkyWings Airlines Reservation System{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section no-print">
+  <div class="hero-pattern"></div>
+  <div class="hero-container">
+    <div class="hero-badge">
+      <span>✨ Official Airline Reservation Platform</span>
+    </div>
+    <h1 class="hero-title">
+      Explore The World With <br>
+      <span class="gradient-text">SkyWings Premier Flights</span>
+    </h1>
+    <p class="hero-subtitle">
+      Search instant fares, pick your preferred aircraft seats, and download digital boarding passes seamlessly.
+    </p>
+  </div>
+</section>
+
+<!-- Flight Search Card -->
+<div class="search-card no-print">
+  <div class="search-tabs">
+    <div class="tab-group">
+      <button type="button" class="trip-tab active" data-type="oneway" id="tabOneWay">One-Way</button>
+      <button type="button" class="trip-tab" data-type="roundtrip" id="tabRoundTrip">Round-Trip</button>
+    </div>
+
+    <div class="cabin-passengers-bar">
+      <select id="cabinClassSelect" class="quick-select">
+        <option value="Economy" selected>Economy Class</option>
+        <option value="Business">Business Class</option>
+        <option value="First">First Class</option>
+      </select>
+
+      <select id="passengersSelect" class="quick-select">
+        <option value="1" selected>1 Passenger</option>
+        <option value="2">2 Passengers</option>
+        <option value="3">3 Passengers</option>
+        <option value="4">4 Passengers</option>
+      </select>
+    </div>
+  </div>
+
+  <form id="flightSearchForm" class="search-form-grid">
+    <!-- Origin -->
+    <div class="input-box">
+      <label for="originSelect">🛫 From / Origin</label>
+      <select id="originSelect" required>
+        <option value="">Loading airports...</option>
+      </select>
+    </div>
+
+    <!-- Swap Button -->
+    <div class="swap-btn-container">
+      <button type="button" class="swap-btn" id="swapAirportsBtn" title="Swap Origin and Destination">
+        ⇄
+      </button>
+    </div>
+
+    <!-- Destination -->
+    <div class="input-box">
+      <label for="destSelect">🛬 To / Destination</label>
+      <select id="destSelect" required>
+        <option value="">Loading airports...</option>
+      </select>
+    </div>
+
+    <!-- Departure Date -->
+    <div class="input-box">
+      <label for="depDate">📅 Departure</label>
+      <input type="date" id="depDate" required>
+    </div>
+
+    <!-- Return Date (Hidden for One-Way) -->
+    <div class="input-box" id="returnDateWrapper" style="display: none;">
+      <label for="returnDate">📅 Return Date</label>
+      <input type="date" id="returnDate">
+    </div>
+
+    <!-- Search Submit Button -->
+    <button type="submit" class="btn-search" id="btnSubmitSearch">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+        <circle cx="11" cy="11" r="8"/>
+        <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+      </svg>
+      Find Flights
+    </button>
+  </form>
+</div>
+
+<!-- Main Content: Filters & Search Results -->
+<div class="main-container">
+  <div class="results-layout">
+    
+    <!-- Filter Sidebar -->
+    <aside class="filters-sidebar no-print">
+      <div class="filters-header">
+        <span class="filters-title">
+          <span>⚙️</span> Filter Flights
+        </span>
+        <button type="button" class="btn-reset-filters" id="resetFiltersBtn">Reset</button>
+      </div>
+
+      <!-- Price Range Filter -->
+      <div class="filter-section">
+        <div class="filter-label">
+          <span>Max Price</span>
+          <span id="priceDisplay" style="color:var(--primary); font-weight:700;">$2000</span>
+        </div>
+        <div class="price-range-container">
+          <input type="range" class="price-slider" id="priceSlider" min="50" max="3000" step="25" value="2000">
+          <div class="price-display">
+            <span>$50</span>
+            <span>$3000</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Stops Filter -->
+      <div class="filter-section">
+        <div class="filter-label">Flight Stops</div>
+        <div class="filter-options">
+          <label class="filter-option">
+            <input type="radio" name="stopsFilter" value="all" checked>
+            <span>All Flights</span>
+          </label>
+          <label class="filter-option">
+            <input type="radio" name="stopsFilter" value="0">
+            <span>Non-stop only</span>
+          </label>
+          <label class="filter-option">
+            <input type="radio" name="stopsFilter" value="1">
+            <span>1 Stop</span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Airlines Filter -->
+      <div class="filter-section">
+        <div class="filter-label">Airlines</div>
+        <div class="filter-options">
+          <label class="filter-option">
+            <input type="radio" name="airlineFilter" value="all" checked>
+            <span>All Airlines</span>
+          </label>
+          <label class="filter-option">
+            <input type="radio" name="airlineFilter" value="SkyWings Airways">
+            <span>SkyWings Airways</span>
+          </label>
+          <label class="filter-option">
+            <input type="radio" name="airlineFilter" value="British Airways">
+            <span>British Airways</span>
+          </label>
+          <label class="filter-option">
+            <input type="radio" name="airlineFilter" value="Emirates Air">
+            <span>Emirates Air</span>
+          </label>
+          <label class="filter-option">
+            <input type="radio" name="airlineFilter" value="AeroGlobe">
+            <span>AeroGlobe</span>
+          </label>
+          <label class="filter-option">
+            <input type="radio" name="airlineFilter" value="Air France">
+            <span>Air France</span>
+          </label>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Flight Results Column -->
+    <section class="results-column">
+      <div class="results-header-bar no-print">
+        <div class="results-count" id="resultsCountText">
+          Searching flights...
+        </div>
+
+        <div class="sort-wrapper">
+          <span class="sort-label">Sort By:</span>
+          <select id="sortSelect" class="sort-select">
+            <option value="price_asc">Price: Lowest First</option>
+            <option value="price_desc">Price: Highest First</option>
+            <option value="duration_asc">Duration: Shortest</option>
+            <option value="departure_asc">Departure: Earliest</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Flight Cards Container -->
+      <div id="flightsList" class="flights-list">
+        <!-- Rendered dynamically by app.js -->
+      </div>
+    </section>
+
+  </div>
+</div>
+
+<!-- ==========================================
+     MODAL: SEAT SELECTION
+     ========================================== -->
+<div class="modal-overlay" id="seatSelectionModal">
+  <div class="modal-container">
+    <div class="modal-header">
+      <div class="modal-title-group">
+        <h3 id="seatModalFlightNum">Select Your Seat</h3>
+        <p class="modal-subtitle" id="seatModalRoute">Flight Details</p>
+      </div>
+      <button type="button" class="modal-close-btn" id="closeSeatModal">&times;</button>
+    </div>
+
+    <div class="modal-body">
+      <div class="seat-legend">
+        <div class="legend-item">
+          <div class="legend-color available"></div>
+          <span>Available</span>
+        </div>
+        <div class="legend-item">
+          <div class="legend-color selected"></div>
+          <span>Your Selection</span>
+        </div>
+        <div class="legend-item">
+          <div class="legend-color occupied"></div>
+          <span>Reserved / Occupied</span>
+        </div>
+      </div>
+
+      <!-- Aircraft Cabin Layout -->
+      <div id="cabinMap" class="cabin-map-container">
+        <!-- Generated by JavaScript -->
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <div class="selected-seat-summary">
+        <span style="color:#64748b; font-size:0.9rem;">Selected Seat:</span>
+        <span class="seat-badge-pill" id="selectedSeatText">None</span>
+      </div>
+
+      <button type="button" class="btn-proceed-booking" id="proceedToCheckoutBtn" disabled>
+        Continue to Passenger Details →
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ==========================================
+     MODAL: PASSENGER DETAILS & CHECKOUT
+     ========================================== -->
+<div class="modal-overlay" id="checkoutModal">
+  <div class="modal-container" style="max-width: 780px;">
+    <div class="modal-header">
+      <div class="modal-title-group">
+        <h3>Complete Passenger Reservation</h3>
+        <p class="modal-subtitle">Secure Your Flight Reservation</p>
+      </div>
+      <button type="button" class="modal-close-btn" id="closeCheckoutModal">&times;</button>
+    </div>
+
+    <div class="modal-body">
+      <div class="checkout-grid">
+        <!-- Form -->
+        <form id="passengerForm" class="passenger-form">
+          <div class="form-group">
+            <label for="passName">Full Legal Name (as on ID / Passport) *</label>
+            <input type="text" id="passName" placeholder="e.g. Eleanor Vance" required>
+          </div>
+
+          <div class="form-group">
+            <label for="passEmail">Email Address (For E-Ticket delivery) *</label>
+            <input type="email" id="passEmail" placeholder="e.g. eleanor.vance@example.com" required>
+          </div>
+
+          <div class="form-group">
+            <label for="passPhone">Contact Phone Number *</label>
+            <input type="tel" id="passPhone" placeholder="e.g. +1 555-0144" required>
+          </div>
+
+          <div class="form-group">
+            <label for="passPassport">Passport / ID Number (Optional)</label>
+            <input type="text" id="passPassport" placeholder="e.g. A9821457">
+          </div>
+
+          <button type="submit" class="btn-confirm-pay" style="margin-top: 0.5rem;">
+            🔒 Confirm & Issue Ticket
+          </button>
+        </form>
+
+        <!-- Booking Summary -->
+        <div id="checkoutFlightSummary" class="booking-summary-card">
+          <!-- Populated by JavaScript -->
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==========================================
+     MODAL: BOOKING CONFIRMATION & PNR
+     ========================================== -->
+<div class="modal-overlay" id="confirmationModal">
+  <div class="modal-container" style="max-width: 540px;">
+    <div class="modal-body">
+      <div class="success-card">
+        <div class="success-icon-badge">✓</div>
+        <h2 style="font-family:'Space Grotesk', sans-serif; font-size:1.75rem; color:#0f172a; margin-bottom:0.5rem;">
+          Booking Confirmed!
+        </h2>
+        <p style="color:#64748b; font-size:0.95rem;">
+          Your flight has been reserved and your seat is confirmed in our system.
+        </p>
+
+        <div class="pnr-display-box">
+          <div style="font-size:0.75rem; font-weight:700; color:#64748b; text-transform:uppercase; letter-spacing:1px; margin-bottom:0.25rem;">
+            Booking Reference / PNR
+          </div>
+          <div class="pnr-code-text" id="confirmedPnrText">SW0000</div>
+          <button type="button" class="btn" id="copyPnrBtn" style="margin-top:0.75rem; background:#eff6ff; color:#1e40af; border:1px solid #bfdbfe; padding:0.4rem 0.9rem; border-radius:6px; font-weight:700; cursor:pointer;">
+            📋 Copy PNR
+          </button>
+        </div>
+
+        <div style="display:flex; flex-direction:column; gap:0.75rem; margin-top:1.5rem;">
+          <button type="button" class="btn" id="viewTicketBtn" style="background:#1e40af; color:#fff; border:none; padding:0.85rem; border-radius:10px; font-weight:700; cursor:pointer;">
+            🎫 View & Print Boarding Pass
+          </button>
+          <button type="button" class="btn" id="closeConfirmationModal" style="background:transparent; color:#64748b; border:none; padding:0.5rem; font-weight:600; cursor:pointer;">
+            Close
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/app.js') }}"></script>
+{% endblock %}

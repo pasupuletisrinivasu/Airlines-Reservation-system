@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="SkyWings Airlines Reservation System - Book domestic and international flights, select your seats, manage reservations, and download instant boarding passes.">
+  <title>{% block title %}SkyWings Airlines - Book Flights & Reserve Seats{% endblock %}</title>
+  
+  <!-- Favicon -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>✈️</text></svg>">
+
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/boarding-pass.css') }}">
+  {% block extra_css %}{% endblock %}
+</head>
+<body>
+
+  <!-- Top Navigation Bar -->
+  <header class="navbar no-print">
+    <div class="nav-container">
+      <a href="/" class="brand-logo" id="navBrandLogo">
+        <div class="brand-icon">
+          <svg viewBox="0 0 24 24">
+            <path d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z"/>
+          </svg>
+        </div>
+        <div class="brand-text">SkyWings <span>Airlines</span></div>
+      </a>
+
+      <nav>
+        <ul class="nav-links">
+          <li>
+            <a href="/" class="nav-link {% if request.path == '/' %}active{% endif %}" id="navSearchLink">
+              <span>✈️</span> Search Flights
+            </a>
+          </li>
+          <li>
+            <a href="/flights" class="nav-link {% if request.path == '/flights' %}active{% endif %}" id="navSchedulesLink">
+              <span>📅</span> Flight Schedules
+            </a>
+          </li>
+          <li>
+            <a href="/my-bookings" class="nav-link pnr-btn {% if request.path == '/my-bookings' %}active{% endif %}" id="navBookingsLink">
+              <span>🎫</span> My Bookings / PNR
+            </a>
+          </li>
+          <li>
+            <a href="/admin" class="nav-link admin-btn {% if request.path == '/admin' %}active{% endif %}" id="navAdminLink">
+              <span>⚙️</span> Admin Portal
+            </a>
+          </li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Dynamic Content -->
+  <main>
+    {% block content %}{% endblock %}
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer no-print">
+    <div class="footer-container">
+      <div class="footer-brand">
+        <span style="font-size:1.4rem;">✈️</span>
+        <div>
+          <strong style="color:#ffffff; font-size:1.1rem; font-family:'Space Grotesk', sans-serif;">SkyWings Reservation Network</strong>
+          <p style="font-size:0.8rem; color:#94a3b8; margin-top:2px;">Global Passenger Booking & Flight Management System</p>
+        </div>
+      </div>
+
+      <div style="font-size:0.85rem; color:#94a3b8; text-align:right;">
+        <p>Built with Python, Flask, SQLite & Modern Vanilla CSS</p>
+        <p style="margin-top:4px;">© 2026 SkyWings Airlines System. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  {% block scripts %}{% endblock %}
+</body>
+</html>

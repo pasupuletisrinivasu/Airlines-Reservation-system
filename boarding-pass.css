@@ -1,0 +1,289 @@
+/* ==========================================================================
+   SkyWings Boarding Pass & E-Ticket Stylesheet
+   Realistic airline boarding pass with tear-off stub, barcode, and print optimization
+   ========================================================================== */
+
+.boarding-pass-wrapper {
+  max-width: 860px;
+  margin: 2rem auto;
+  position: relative;
+  filter: drop-shadow(0 15px 35px rgba(0, 0, 0, 0.15));
+}
+
+.boarding-pass {
+  background: #ffffff;
+  border-radius: 20px;
+  display: flex;
+  overflow: hidden;
+  border: 1px solid #e2e8f0;
+  position: relative;
+}
+
+/* Notches for authentic tear-off look */
+.boarding-pass::before,
+.boarding-pass::after {
+  content: '';
+  position: absolute;
+  width: 28px;
+  height: 28px;
+  background: var(--surface, #f8fafc);
+  border-radius: 50%;
+  right: 235px;
+  z-index: 10;
+}
+
+.boarding-pass::before {
+  top: -14px;
+}
+
+.boarding-pass::after {
+  bottom: -14px;
+}
+
+/* Main Section */
+.pass-main {
+  flex: 1;
+  padding: 1.75rem 2rem;
+  border-right: 2px dashed #cbd5e1;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.pass-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 2px solid #f1f5f9;
+  padding-bottom: 1rem;
+}
+
+.pass-airline {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 800;
+  font-size: 1.25rem;
+  color: #1e40af;
+}
+
+.pass-flight-type {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  background: #eff6ff;
+  color: #1d4ed8;
+  padding: 0.35rem 0.85rem;
+  border-radius: 999px;
+}
+
+/* Route Section */
+.pass-route {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 0;
+}
+
+.route-point {
+  display: flex;
+  flex-direction: column;
+}
+
+.route-point.right {
+  text-align: right;
+}
+
+.route-city {
+  font-size: 0.85rem;
+  color: #64748b;
+  font-weight: 600;
+}
+
+.route-code {
+  font-size: 2.2rem;
+  font-weight: 900;
+  color: #0f172a;
+  line-height: 1;
+  font-family: 'Space Grotesk', sans-serif;
+}
+
+.route-time {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #1e40af;
+  margin-top: 0.2rem;
+}
+
+.route-path-graphic {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.3rem;
+  flex: 1;
+  max-width: 180px;
+}
+
+/* Grid Details */
+.pass-details-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+  background: #f8fafc;
+  padding: 1rem 1.25rem;
+  border-radius: 12px;
+}
+
+.pass-detail-item {
+  display: flex;
+  flex-direction: column;
+}
+
+.detail-label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.detail-value {
+  font-size: 1rem;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.detail-value.highlight {
+  color: #1e40af;
+}
+
+/* Barcode section */
+.pass-barcode-area {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-top: 1px dashed #e2e8f0;
+  padding-top: 1rem;
+}
+
+.barcode-svg {
+  height: 48px;
+  width: 240px;
+}
+
+.pnr-box-pass {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #64748b;
+}
+
+.pnr-box-pass strong {
+  color: #0f172a;
+  font-size: 1.1rem;
+  letter-spacing: 1px;
+}
+
+/* Stub Section (Right side tear-off) */
+.pass-stub {
+  width: 250px;
+  background: #fcfdfe;
+  padding: 1.75rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  position: relative;
+}
+
+.stub-header {
+  border-bottom: 2px solid #f1f5f9;
+  padding-bottom: 0.75rem;
+}
+
+.stub-flight-badge {
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: #1e40af;
+}
+
+.stub-route {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: #0f172a;
+  margin-top: 0.2rem;
+}
+
+.stub-details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  margin: 0.75rem 0;
+}
+
+.qr-code-box {
+  width: 80px;
+  height: 80px;
+  margin: 0 auto;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.qr-code-box svg {
+  width: 100%;
+  height: 100%;
+}
+
+.boarding-pass.cancelled-ticket {
+  opacity: 0.7;
+}
+
+.cancelled-overlay-stamp {
+  position: absolute;
+  top: 45%;
+  left: 35%;
+  transform: translate(-50%, -50%) rotate(-15deg);
+  border: 4px solid #ef4444;
+  color: #ef4444;
+  font-size: 2.2rem;
+  font-weight: 900;
+  padding: 0.5rem 2rem;
+  border-radius: 12px;
+  text-transform: uppercase;
+  letter-spacing: 4px;
+  z-index: 50;
+  pointer-events: none;
+  background: rgba(254, 242, 242, 0.85);
+}
+
+/* ==========================================
+   PRINT OPTIMIZATION
+   ========================================== */
+@media print {
+  body {
+    background: #ffffff !important;
+  }
+  .navbar,
+  .footer,
+  .no-print,
+  .hero-section,
+  .search-card,
+  .btn,
+  .booking-actions-bar {
+    display: none !important;
+  }
+  .boarding-pass-wrapper {
+    margin: 0 auto !important;
+    filter: none !important;
+    box-shadow: none !important;
+  }
+  .boarding-pass {
+    border: 1px solid #000000 !important;
+    page-break-inside: avoid;
+  }
+}

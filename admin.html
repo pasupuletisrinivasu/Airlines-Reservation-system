@@ -1,0 +1,238 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Management Portal | SkyWings Airlines{% endblock %}
+
+{% block content %}
+<div class="hero-section" style="padding: 2.5rem 1.5rem 3.5rem;">
+  <div class="hero-pattern"></div>
+  <div class="hero-container">
+    <div class="hero-badge" style="background: rgba(245, 158, 11, 0.15); border-color: rgba(245, 158, 11, 0.3); color: #fbbf24;">
+      <span>🔒 Operations Management Center</span>
+    </div>
+    <h1 class="hero-title" style="font-size: 2.5rem; margin-bottom: 0.5rem;">
+      Airline <span class="gradient-text">Operations & Bookings</span>
+    </h1>
+    <p class="hero-subtitle" style="margin-bottom: 0;">
+      Real-time visibility into flight routes, seat occupancies, passenger bookings, and operational performance.
+    </p>
+  </div>
+</div>
+
+<div class="main-container" style="margin-top: 2rem;">
+  <!-- KPI Metrics Grid -->
+  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.25rem; margin-bottom: 2.5rem;">
+    <!-- Metric 1 -->
+    <div style="background: #ffffff; padding: 1.5rem; border-radius: 16px; border: 1px solid var(--border); box-shadow: var(--shadow-sm); display: flex; align-items: center; gap: 1rem;">
+      <div style="width: 50px; height: 50px; border-radius: 12px; background: #eff6ff; color: #1e40af; display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">
+        ✈️
+      </div>
+      <div>
+        <div style="font-size: 0.8rem; font-weight: 700; color: #64748b; text-transform: uppercase;">Active Flights</div>
+        <div id="statTotalFlights" style="font-size: 1.75rem; font-weight: 800; color: #0f172a; line-height: 1.1;">--</div>
+      </div>
+    </div>
+
+    <!-- Metric 2 -->
+    <div style="background: #ffffff; padding: 1.5rem; border-radius: 16px; border: 1px solid var(--border); box-shadow: var(--shadow-sm); display: flex; align-items: center; gap: 1rem;">
+      <div style="width: 50px; height: 50px; border-radius: 12px; background: #ecfdf5; color: #059669; display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">
+        🎫
+      </div>
+      <div>
+        <div style="font-size: 0.8rem; font-weight: 700; color: #64748b; text-transform: uppercase;">Confirmed Bookings</div>
+        <div id="statTotalBookings" style="font-size: 1.75rem; font-weight: 800; color: #0f172a; line-height: 1.1;">--</div>
+      </div>
+    </div>
+
+    <!-- Metric 3 -->
+    <div style="background: #ffffff; padding: 1.5rem; border-radius: 16px; border: 1px solid var(--border); box-shadow: var(--shadow-sm); display: flex; align-items: center; gap: 1rem;">
+      <div style="width: 50px; height: 50px; border-radius: 12px; background: #fffbeb; color: #d97706; display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">
+        💰
+      </div>
+      <div>
+        <div style="font-size: 0.8rem; font-weight: 700; color: #64748b; text-transform: uppercase;">Total Revenue</div>
+        <div id="statTotalRevenue" style="font-size: 1.75rem; font-weight: 800; color: #0f172a; line-height: 1.1;">--</div>
+      </div>
+    </div>
+
+    <!-- Metric 4 -->
+    <div style="background: #ffffff; padding: 1.5rem; border-radius: 16px; border: 1px solid var(--border); box-shadow: var(--shadow-sm); display: flex; align-items: center; gap: 1rem;">
+      <div style="width: 50px; height: 50px; border-radius: 12px; background: #fdf2f8; color: #db2777; display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">
+        💺
+      </div>
+      <div>
+        <div style="font-size: 0.8rem; font-weight: 700; color: #64748b; text-transform: uppercase;">Seats Reserved</div>
+        <div id="statTotalOccupied" style="font-size: 1.75rem; font-weight: 800; color: #0f172a; line-height: 1.1;">--</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Recent Bookings Table -->
+  <div style="background: #ffffff; border-radius: 16px; border: 1px solid var(--border); padding: 1.5rem; margin-bottom: 2.5rem; box-shadow: var(--shadow-sm);">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
+      <div>
+        <h2 style="font-size: 1.25rem; font-weight: 800; color: #0f172a;">Recent Passenger Bookings</h2>
+        <p style="font-size: 0.85rem; color: #64748b;">Live reservations registered in SQLite</p>
+      </div>
+    </div>
+
+    <div style="overflow-x: auto;">
+      <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.95rem;">
+        <thead>
+          <tr style="background: #f8fafc; border-bottom: 2px solid var(--border); color: #64748b; font-size: 0.8rem; text-transform: uppercase;">
+            <th style="padding: 0.85rem 1rem;">PNR</th>
+            <th style="padding: 0.85rem 1rem;">Passenger</th>
+            <th style="padding: 0.85rem 1rem;">Flight</th>
+            <th style="padding: 0.85rem 1rem;">Travel Date</th>
+            <th style="padding: 0.85rem 1rem;">Seat & Class</th>
+            <th style="padding: 0.85rem 1rem;">Fare</th>
+            <th style="padding: 0.85rem 1rem;">Status</th>
+          </tr>
+        </thead>
+        <tbody id="adminBookingsTableBody">
+          <tr><td colspan="7" style="text-align: center; padding: 1.5rem; color: #94a3b8;">Loading bookings...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Flights Management Table -->
+  <div style="background: #ffffff; border-radius: 16px; border: 1px solid var(--border); padding: 1.5rem; box-shadow: var(--shadow-sm);">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem; flex-wrap: wrap; gap: 1rem;">
+      <div>
+        <h2 style="font-size: 1.25rem; font-weight: 800; color: #0f172a;">Flight Network & Schedules</h2>
+        <p style="font-size: 0.85rem; color: #64748b;">Manage airline routes, timings, and tier pricing</p>
+      </div>
+      <button type="button" class="btn" id="openAddFlightBtn" style="background: #1e40af; color: #ffffff; border: none; padding: 0.65rem 1.25rem; border-radius: 8px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 0.4rem;">
+        ➕ Add New Flight
+      </button>
+    </div>
+
+    <div style="overflow-x: auto;">
+      <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.95rem;">
+        <thead>
+          <tr style="background: #f8fafc; border-bottom: 2px solid var(--border); color: #64748b; font-size: 0.8rem; text-transform: uppercase;">
+            <th style="padding: 0.85rem 1rem;">Flight No</th>
+            <th style="padding: 0.85rem 1rem;">Airline</th>
+            <th style="padding: 0.85rem 1rem;">Origin</th>
+            <th style="padding: 0.85rem 1rem;">Destination</th>
+            <th style="padding: 0.85rem 1rem;">Schedule</th>
+            <th style="padding: 0.85rem 1rem;">Duration</th>
+            <th style="padding: 0.85rem 1rem;">Econ Fare</th>
+            <th style="padding: 0.85rem 1rem;">Business</th>
+            <th style="padding: 0.85rem 1rem;">Action</th>
+          </tr>
+        </thead>
+        <tbody id="adminFlightsTableBody">
+          <tr><td colspan="9" style="text-align: center; padding: 1.5rem; color: #94a3b8;">Loading flights...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ==========================================
+     MODAL: ADD FLIGHT SCHEDULE
+     ========================================== -->
+<div class="modal-overlay" id="addFlightModal">
+  <div class="modal-container" style="max-width: 650px;">
+    <div class="modal-header">
+      <div class="modal-title-group">
+        <h3>Create New Flight Schedule</h3>
+        <p class="modal-subtitle">Add flight route to reservation system</p>
+      </div>
+      <button type="button" class="modal-close-btn" id="closeAddFlightBtn">&times;</button>
+    </div>
+
+    <div class="modal-body">
+      <form id="addFlightForm" style="display: flex; flex-direction: column; gap: 1rem;">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+          <div class="form-group">
+            <label for="newFlightNum">Flight Number (e.g. SW-990) *</label>
+            <input type="text" id="newFlightNum" placeholder="SW-990" required>
+          </div>
+          <div class="form-group">
+            <label for="newAirline">Airline Carrier *</label>
+            <input type="text" id="newAirline" value="SkyWings Airways" required>
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+          <div class="form-group">
+            <label for="newOrigin">Origin Airport Code *</label>
+            <select id="newOrigin" required style="padding:0.75rem; border:1.5px solid var(--border); border-radius:8px;">
+              <option value="JFK">JFK - New York</option>
+              <option value="LHR">LHR - London</option>
+              <option value="DXB">DXB - Dubai</option>
+              <option value="SIN">SIN - Singapore</option>
+              <option value="DEL">DEL - New Delhi</option>
+              <option value="BOM">BOM - Mumbai</option>
+              <option value="SFO">SFO - San Francisco</option>
+              <option value="CDG">CDG - Paris</option>
+              <option value="HND">HND - Tokyo</option>
+              <option value="SYD">SYD - Sydney</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="newDest">Destination Airport Code *</label>
+            <select id="newDest" required style="padding:0.75rem; border:1.5px solid var(--border); border-radius:8px;">
+              <option value="LHR">LHR - London</option>
+              <option value="JFK">JFK - New York</option>
+              <option value="DXB">DXB - Dubai</option>
+              <option value="SIN">SIN - Singapore</option>
+              <option value="DEL">DEL - New Delhi</option>
+              <option value="BOM">BOM - Mumbai</option>
+              <option value="SFO">SFO - San Francisco</option>
+              <option value="CDG">CDG - Paris</option>
+              <option value="HND">HND - Tokyo</option>
+              <option value="SYD">SYD - Sydney</option>
+            </select>
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem;">
+          <div class="form-group">
+            <label for="newDepTime">Departure (HH:MM) *</label>
+            <input type="time" id="newDepTime" value="09:00" required>
+          </div>
+          <div class="form-group">
+            <label for="newArrTime">Arrival (HH:MM) *</label>
+            <input type="time" id="newArrTime" value="13:30" required>
+          </div>
+          <div class="form-group">
+            <label for="newDuration">Duration (Mins) *</label>
+            <input type="number" id="newDuration" value="270" required>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="newAircraft">Aircraft Model</label>
+          <input type="text" id="newAircraft" value="Boeing 787-9 Dreamliner">
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem;">
+          <div class="form-group">
+            <label for="newEconPrice">Economy ($) *</label>
+            <input type="number" id="newEconPrice" value="350" required>
+          </div>
+          <div class="form-group">
+            <label for="newBusPrice">Business ($)</label>
+            <input type="number" id="newBusPrice" value="850">
+          </div>
+          <div class="form-group">
+            <label for="newFirstPrice">First Class ($)</label>
+            <input type="number" id="newFirstPrice" value="1500">
+          </div>
+        </div>
+
+        <button type="submit" class="btn-search" style="margin-top: 1rem; width: 100%; border-radius: 8px;">
+          ➕ Save & Publish Flight
+        </button>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/admin.js') }}"></script>
+{% endblock %}

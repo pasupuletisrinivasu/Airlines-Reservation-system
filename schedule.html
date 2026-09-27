@@ -1,0 +1,127 @@
+{% extends "base.html" %}
+
+{% block title %}Flight Schedules & Direct Routes | SkyWings Airlines{% endblock %}
+
+{% block content %}
+<div class="hero-section" style="padding: 2.5rem 1.5rem 3.5rem;">
+  <div class="hero-pattern"></div>
+  <div class="hero-container">
+    <h1 class="hero-title" style="font-size: 2.5rem; margin-bottom: 0.5rem;">
+      Global <span class="gradient-text">Flight Schedules</span> & Destinations
+    </h1>
+    <p class="hero-subtitle" style="margin-bottom: 0;">
+      Browse all scheduled nonstop and international connecting flights operated across our network.
+    </p>
+  </div>
+</div>
+
+<div class="main-container" style="margin-top: 2rem;">
+  <div class="search-card" style="margin: 0 0 2rem 0; padding: 1.25rem 1.5rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+    <div style="display: flex; gap: 1rem; align-items: center; flex: 1;">
+      <span style="font-weight: 700; color: #0f172a;">Search Routes:</span>
+      <input type="text" id="routeFilterInput" placeholder="Filter by airport code or city (e.g. London, JFK, DEL)..." style="flex: 1; max-width: 400px; padding: 0.6rem 1rem; border: 1.5px solid var(--border); border-radius: 8px; outline: none;">
+    </div>
+    <span id="routeCountBadge" style="font-size: 0.85rem; font-weight: 700; background: #eff6ff; color: #1e40af; padding: 0.4rem 0.9rem; border-radius: 999px;">
+      Loading flights...
+    </span>
+  </div>
+
+  <div style="background: #ffffff; border-radius: 16px; border: 1px solid var(--border); overflow-x: auto; box-shadow: var(--shadow-sm);">
+    <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.95rem;">
+      <thead>
+        <tr style="background: #f8fafc; border-bottom: 2px solid var(--border); color: #64748b; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.5px;">
+          <th style="padding: 1rem 1.25rem;">Flight</th>
+          <th style="padding: 1rem 1.25rem;">Airline</th>
+          <th style="padding: 1rem 1.25rem;">Origin</th>
+          <th style="padding: 1rem 1.25rem;">Destination</th>
+          <th style="padding: 1rem 1.25rem;">Departure</th>
+          <th style="padding: 1rem 1.25rem;">Arrival</th>
+          <th style="padding: 1rem 1.25rem;">Duration</th>
+          <th style="padding: 1rem 1.25rem;">Type</th>
+          <th style="padding: 1rem 1.25rem;">Economy Fare</th>
+          <th style="padding: 1rem 1.25rem; text-align: right;">Action</th>
+        </tr>
+      </thead>
+      <tbody id="schedulesTableBody">
+        <tr>
+          <td colspan="10" style="text-align: center; padding: 2rem; color: #94a3b8;">
+            Loading scheduled routes...
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', async () => {
+  const tableBody = document.getElementById('schedulesTableBody');
+  const countBadge = document.getElementById('routeCountBadge');
+  const filterInput = document.getElementById('routeFilterInput');
+  let allFlights = [];
+
+  try {
+    const res = await fetch('/api/admin/flights');
+    allFlights = await res.json();
+    renderTable(allFlights);
+  } catch (err) {
+    tableBody.innerHTML = `<tr><td colspan="10" style="text-align:center; padding:2rem; color:red;">Failed to load schedules.</td></tr>`;
+  }
+
+  function renderTable(flights) {
+    countBadge.textContent = `${flights.length} Scheduled Flights`;
+    if (flights.length === 0) {
+      tableBody.innerHTML = `<tr><td colspan="10" style="text-align:center; padding:2rem; color:#94a3b8;">No routes match your search.</td></tr>`;
+      return;
+    }
+
+    let html = '';
+    flights.forEach(f => {
+      const isNonstop = f.stops === 0;
+      html += `
+        <tr style="border-bottom: 1px solid #f1f5f9; transition: background 0.2s;" onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background='transparent'">
+          <td style="padding: 1rem 1.25rem;"><strong style="color:#1e40af;">${f.flight_number}</strong></td>
+          <td style="padding: 1rem 1.25rem; font-weight:600;">${f.airline}</td>
+          <td style="padding: 1rem 1.25rem;">
+            <strong>${f.origin_code}</strong> <span style="color:#64748b; font-size:0.85rem;">(${f.origin_city})</span>
+          </td>
+          <td style="padding: 1rem 1.25rem;">
+            <strong>${f.dest_code}</strong> <span style="color:#64748b; font-size:0.85rem;">(${f.dest_city})</span>
+          </td>
+          <td style="padding: 1rem 1.25rem; font-weight:700;">${f.departure_time}</td>
+          <td style="padding: 1rem 1.25rem; font-weight:700;">${f.arrival_time}</td>
+          <td style="padding: 1rem 1.25rem; color:#64748b;">${Math.floor(f.duration_mins / 60)}h ${f.duration_mins % 60}m</td>
+          <td style="padding: 1rem 1.25rem;">
+            <span style="font-size:0.75rem; font-weight:700; padding:0.2rem 0.5rem; border-radius:999px; background:${isNonstop ? '#dcfce7;color:#15803d' : '#fef3c7;color:#b45309'}">
+              ${isNonstop ? 'Non-stop' : '1 Stop'}
+            </span>
+          </td>
+          <td style="padding: 1rem 1.25rem;"><strong style="font-size:1.05rem;">$${Math.round(f.economy_price)}</strong></td>
+          <td style="padding: 1rem 1.25rem; text-align: right;">
+            <a href="/?origin=${f.origin_code}&dest=${f.dest_code}" style="background:#1e40af; color:#fff; text-decoration:none; padding:0.45rem 0.9rem; border-radius:6px; font-weight:700; font-size:0.85rem; display:inline-block;">
+              Book Now →
+            </a>
+          </td>
+        </tr>
+      `;
+    });
+    tableBody.innerHTML = html;
+  }
+
+  filterInput.addEventListener('input', (e) => {
+    const term = e.target.value.toLowerCase().trim();
+    const filtered = allFlights.filter(f => 
+      f.origin_code.toLowerCase().includes(term) ||
+      f.dest_code.toLowerCase().includes(term) ||
+      f.origin_city.toLowerCase().includes(term) ||
+      f.dest_city.toLowerCase().includes(term) ||
+      f.flight_number.toLowerCase().includes(term) ||
+      f.airline.toLowerCase().includes(term)
+    );
+    renderTable(filtered);
+  });
+});
+</script>
+{% endblock %}
